@@ -25,6 +25,8 @@ namespace MauiAppMapTest
 #if DEBUG
             builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<App>();
+            builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginVM>();
 

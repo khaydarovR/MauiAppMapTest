@@ -7,7 +7,9 @@ namespace MauiAppMapTest
 {
     public partial class AppShell : Shell
     {
-        public AppShell()
+        private readonly LoginVM loginVM;
+
+        public AppShell(LoginVM loginVM)
         {
             InitializeComponent();
             //Register all routes
@@ -17,12 +19,16 @@ namespace MauiAppMapTest
             Routing.RegisterRoute("settings", typeof(SettingsPage));
             Routing.RegisterRoute("deliv", typeof(DelivPage));
             Routing.RegisterRoute("acc", typeof(AccPage));
-            Routing.RegisterRoute("login", typeof(LoginPage));        }
+            Routing.RegisterRoute("login", typeof(LoginPage));
+            this.loginVM = loginVM;
+        }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            Shell.Current.GoToAsync("//login");
+            //Shell.Current.GoToAsync("//login");
+            var p = new NavigationPage(new LoginPage(loginVM));
+            Navigation.PushModalAsync(p);
         }
     }
 }

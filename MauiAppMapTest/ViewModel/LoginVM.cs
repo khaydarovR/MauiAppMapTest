@@ -9,12 +9,14 @@ using System.Windows.Input;
 using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using System.Threading;
+using MauiAppMapTest.Page;
 
 
 namespace MauiAppMapTest.ViewModel
 {
     public class LoginVM : INotifyPropertyChanged
     {
+        private const string JwtKey = "JWT";
         private readonly HttpService http;
 
         public LoginVM(HttpService http)
@@ -23,12 +25,23 @@ namespace MauiAppMapTest.ViewModel
 
             LoginCommand = new Command(async () => await LoginBtn_Clicked());
 
-            var jwt = SecureStorage.GetAsync("JWT");
+        }
+
+        public static void CheckJWT()
+        {
+            var jwt = Preferences.Get(JwtKey, null);
             if (jwt != null)
             {
-                //Shell.Current.GoToAsync("../");
+                GoBack();
             }
         }
+
+        private static async Task GoBack()
+        {
+            var r = await Shell.Current.Navigation.PopModalAsync();
+            Shell.Current.Navigation.RemovePage(r);
+        }
+
         public event PropertyChangedEventHandler? PropertyChanged;
 
         string email;
@@ -71,8 +84,8 @@ namespace MauiAppMapTest.ViewModel
             if (res.IsSuccess)
             {
                 //await App.Current.MainPage.DisplayAlert("Ответ", res.Data.Jwt,"OK");
-                await SecureStorage.SetAsync("JWT", res.Data!.Jwt);
-                await Shell.Current.GoToAsync("../");
+                Preferences.Set(JwtKey, res.Data!.Jwt);
+                await GoBack();
             }
             else
             {

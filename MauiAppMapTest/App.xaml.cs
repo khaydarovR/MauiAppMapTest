@@ -1,12 +1,14 @@
-﻿namespace MauiAppMapTest
+﻿using MauiAppMapTest.ViewModel;
+
+namespace MauiAppMapTest
 {
     public partial class App : Application
     {
-        public App()
+        public App(LoginVM loginVM)
         {
             InitializeComponent();
 
-            MainPage = new AppShell();
+            MainPage = new AppShell(loginVM);
         }
     }
 }

@@ -6,9 +6,7 @@
     xmlns:local="clr-namespace:MauiAppMapTest"
     xmlns:page="clr-namespace:MauiAppMapTest.Page"
     Shell.FlyoutBehavior="Disabled"
-    Title="MauiAppMapTest"
-    CurrentItem="{Binding LoginPage}">
-
+    Title="MauiAppMapTest">
 
     <TabBar>
         <Tab Title="Аккаунт"
@@ -28,10 +26,6 @@
             <ShellContent ContentTemplate="{DataTemplate page:SettingsPage}" />
         </Tab>
     </TabBar>
-
-    <ShellContent 
-        Title="Login" 
-        ContentTemplate="{DataTemplate page:LoginPage}"
-        Route="login"/>
-
+    
+    
 </Shell>
