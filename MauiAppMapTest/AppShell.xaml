@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MauiAppMapTest.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MauiAppMapTest"
+    xmlns:page="clr-namespace:MauiAppMapTest.Page"
+    Shell.FlyoutBehavior="Disabled"
+    Title="MauiAppMapTest"
+    CurrentItem="{Binding LoginPage}">
+
+
+    <TabBar>
+        <Tab Title="Аккаунт"
+     Icon="acc.png">
+            <ShellContent ContentTemplate="{DataTemplate page:AccPage}" />
+        </Tab>
+        <Tab Title="Главная"
+     Icon="home.png">
+            <ShellContent ContentTemplate="{DataTemplate page:HomePage}" />
+        </Tab>
+        <Tab Title="Доставка"
+     Icon="deliv.png">
+            <ShellContent ContentTemplate="{DataTemplate page:DelivPage}" />
+        </Tab>
+        <Tab Title="Настройки"
+     Icon="setting.png">
+            <ShellContent ContentTemplate="{DataTemplate page:SettingsPage}" />
+        </Tab>
+    </TabBar>
+
+    <ShellContent 
+        Title="Login" 
+        ContentTemplate="{DataTemplate page:LoginPage}"
+        Route="login"/>
+
+</Shell>
