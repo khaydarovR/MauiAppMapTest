@@ -5,24 +5,24 @@ namespace MauiAppMapTest.Services;
 
 public class GeoService
 {
-	public async Task<Res<Point>> GetUserLocationAsync()
+	public async Task<Res<Location>> GetUserLocationAsync()
 	{
 		try
 		{
-			var location = await Geolocation.Default.GetLocationAsync();
+			var r = new GeolocationRequest(GeolocationAccuracy.Best);
+			var location = await Geolocation.Default.GetLocationAsync(r);
 			if (location == null) location = await Geolocation.Default.GetLastKnownLocationAsync();
 			
 			if (location != null)
 			{
-				var p = new Point(location.Longitude, location.Latitude);
-				return new Res<Point>(p);
+				return new Res<Location>(location);
 			}
-			return new Res<Point>("location null");
+			return new Res<Location>("location null");
 		}
 		catch (Exception ex)
 		{
 			// Handle any errors that occurred
-			return new Res<Point>(ex.Message);
+			return new Res<Location>(ex.Message);
 		}
 	}
 }

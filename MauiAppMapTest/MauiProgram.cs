@@ -29,6 +29,8 @@ namespace MauiAppMapTest
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginVM>();
+            builder.Services.AddTransient<HomePage>();
+            builder.Services.AddTransient<GeoService>();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://j6tjmg1q-7265.euw.devtunnels.ms/") });
             builder.Services.AddSingleton<HttpService, HttpService>();
