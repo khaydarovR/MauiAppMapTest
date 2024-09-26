@@ -6,6 +6,10 @@
         public bool IsSuccess { get; init; } = false;
         public T? Data { get; set; }
         public ErrorResponse ErrorList { get; set; }
+        public string? ErrorMsg
+        {
+            get => ErrorList.Messages.FirstOrDefault();
+        }
 
         public Res(T data, bool isSuccess = true)
         {
@@ -16,7 +20,7 @@
         public Res(string errorText)
         {
             IsSuccess = false;
-            ErrorList = new ErrorResponse() { Messages = new List<string> { errorText } };
+            ErrorList = new ErrorResponse() { Messages = [errorText] };
         }
 
         public Res(IEnumerable<string> errorTexts)

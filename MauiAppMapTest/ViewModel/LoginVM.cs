@@ -85,7 +85,8 @@ namespace MauiAppMapTest.ViewModel
             {
                 //await App.Current.MainPage.DisplayAlert("Ответ", res.Data.Jwt,"OK");
                 Preferences.Set(JwtKey, res.Data!.Jwt);
-                await GoBack();
+                AuthProvider.JwtSetted.Invoke();
+				await GoBack();
             }
             else
             {
