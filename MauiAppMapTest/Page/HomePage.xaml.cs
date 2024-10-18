@@ -117,7 +117,7 @@ public partial class HomePage : ContentPage
             // Центрирование карты на текущих координатах
             var sc = new ScreenPosition(tpos.X, tpos.Y);
             mapControl.Map.Navigator.CenterOn(tpos.X, tpos.Y);
-            mapControl.Map.Navigator.ZoomTo(30); // Установите желаемый масштаб
+            mapControl.Map.Navigator.ZoomTo(20, 2000); // Установите желаемый масштаб
         }
     }
 }
