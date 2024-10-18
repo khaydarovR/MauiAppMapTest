@@ -39,7 +39,6 @@ public partial class HomePage : ContentPage
         };
         mapControl.Map?.Layers.Add(orderLayer);
         Content = mapControl;
-        mapControl.Map?.Navigator.ZoomTo(120, 5000);
     }
 
     protected override async void OnAppearing()
@@ -87,6 +86,7 @@ public partial class HomePage : ContentPage
 
             // Центрирование карты на местоположении пользователя
             mapControl.Map.Navigator.CenterOn(sphericalMercatorCoordinate);
+            mapControl.Map?.Navigator.ZoomTo(120, 3000);
 
             mapControl.Map.Info += Map_Info;
         }
@@ -117,7 +117,7 @@ public partial class HomePage : ContentPage
             // Центрирование карты на текущих координатах
             var sc = new ScreenPosition(tpos.X, tpos.Y);
             mapControl.Map.Navigator.CenterOn(tpos.X, tpos.Y);
-            mapControl.Map.Navigator.ZoomTo(90); // Установите желаемый масштаб
+            mapControl.Map.Navigator.ZoomTo(30); // Установите желаемый масштаб
         }
     }
 }
