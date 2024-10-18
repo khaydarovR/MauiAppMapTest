@@ -1,78 +1,123 @@
 using Mapsui;
 using Mapsui.Extensions;
+using Mapsui.Layers;
+using Mapsui.Manipulations;
+using Mapsui.Nts;
 using Mapsui.Projections;
+using Mapsui.Styles;
 using Mapsui.Tiling.Layers;
 using MauiAppMapTest.Infra;
 using MauiAppMapTest.Services;
+using Microsoft.Maui.Controls.Shapes;
+using NetTopologySuite.Geometries;
+using System.Net.WebSockets;
+using Point = NetTopologySuite.Geometries.Point;
 
 namespace MauiAppMapTest.Page;
 
 public partial class HomePage : ContentPage
 {
-	private Mapsui.UI.Maui.MapControl mapControl;
-	private TileLayer tileLayer;
-	private GeoService geo;
-	public HomePage(GeoService geo)
-	{
-		InitializeComponent();
+    private Mapsui.UI.Maui.MapControl mapControl;
+    private TileLayer tileLayer;
+    private GenericCollectionLayer<List<IFeature>> orderLayer;
+    private GeoService geo;
+    public HomePage(GeoService geo)
+    {
+        InitializeComponent();
 
-		this.geo = geo;
+        this.geo = geo;
 
-		mapControl = new Mapsui.UI.Maui.MapControl();
-		tileLayer = Mapsui.Tiling.OpenStreetMap.CreateTileLayer();
-		mapControl.Map?.Layers.Add(tileLayer);
-		Content = mapControl;
-	}
+        mapControl = new Mapsui.UI.Maui.MapControl();
 
-	protected override void OnAppearing()
-	{
-		base.OnAppearing();
-		GetLocationAndUpdateMap();
+        tileLayer = Mapsui.Tiling.OpenStreetMap.CreateTileLayer();
+        mapControl.Map?.Layers.Add(tileLayer);
 
-	}
-	Mapsui.Layers.MyLocationLayer myLocationLayer;
-	private async Task GetLocationAndUpdateMap()
-	{
-		var userLocation = await geo.GetUserLocationAsync();
-		if (userLocation.IsSuccess)
-		{
-			myLocationLayer = new Mapsui.Layers.MyLocationLayer(mapControl.Map)
-			{
-				IsCentered = false
-			};
-			mapControl.Map.Layers.Add(myLocationLayer);
-			MPoint sphericalMercatorCoordinate = TransformLocation(userLocation.Data!);
+        orderLayer = new GenericCollectionLayer<List<IFeature>>
+        {
+            Style = SymbolStyles.CreatePinStyle(),
+            Name = "orderLayer",
+        };
+        mapControl.Map?.Layers.Add(orderLayer);
+        Content = mapControl;
+        mapControl.Map?.Navigator.ZoomTo(120, 5000);
+    }
 
-			myLocationLayer.UpdateMyLocation(sphericalMercatorCoordinate);
-			mapControl.Map.Info += Map_Info;
-		}
-		else
-		{
-			await DisplayAlert("Ошибка", userLocation.ErrorMsg, "OK");
-		}
-	}
+    protected override async void OnAppearing()
+    {
+        await GetLocationAndUpdateMap();
+        await SetOrderPos();
+        base.OnAppearing();
 
-	private static MPoint TransformLocation(Location userLocation)
-	{
-		var mp = new MPoint(userLocation.Longitude, userLocation.Latitude);
-		var sphericalMercatorCoordinate = SphericalMercator
-			.FromLonLat(mp.X, mp.Y).ToMPoint();
-		return sphericalMercatorCoordinate;
-	}
+    }
 
-	private async void Map_Info(object? sender, MapInfoEventArgs e)
-	{
-		myLocationLayer.IsCentered = true;
-		myLocationLayer.IsMoving = true;
-		var pos = await geo.GetUserLocationAsync();
-		if (pos.IsSuccess)
-		{
-			var tpos = TransformLocation(pos.Data!);
-			myLocationLayer.UpdateMyLocation(tpos, true);
-			if (pos.Data!.Course != null)
-			{
-				myLocationLayer.UpdateMyDirection(pos.Data!.Course.Value, myLocationLayer.ViewingDirection, true);
-			}
-		}
-	}
+    private async Task SetOrderPos()
+    {
+        var order = await geo.GetOrder();
+        if (order.IsSuccess)
+        {
+            MPoint mp = HomePageHelpers
+                .TransformLocation(order.Data.TargetPosLong, order.Data.TargetPosLati);
+
+            orderLayer?.Features.Add(new GeometryFeature
+            {
+                Geometry = new Point(mp.X, mp.Y)
+            });
+            // To notify the map that a redraw is needed.
+            orderLayer?.DataHasChanged();
+        }
+
+    }
+
+    Mapsui.Layers.MyLocationLayer myLocationLayer;
+    private async Task GetLocationAndUpdateMap()
+    {
+        var userLocation = await geo.GetUserLocationAsync();
+        if (userLocation.IsSuccess)
+        {
+            myLocationLayer = new Mapsui.Layers.MyLocationLayer(mapControl.Map)
+            {
+                IsCentered = true,
+            };
+
+            mapControl.Map.Layers.Add(myLocationLayer);
+
+            // Преобразование координат
+            MPoint sphericalMercatorCoordinate = HomePageHelpers.TransformLocation(userLocation.Data!);
+            myLocationLayer.UpdateMyLocation(sphericalMercatorCoordinate);
+
+            // Центрирование карты на местоположении пользователя
+            mapControl.Map.Navigator.CenterOn(sphericalMercatorCoordinate);
+
+            mapControl.Map.Info += Map_Info;
+        }
+        else
+        {
+            await DisplayAlert("Ошибка", userLocation.ErrorMsg, "OK");
+        }
+    }
+
+    private async void Map_Info(object? sender, MapInfoEventArgs e)
+    {
+        myLocationLayer.IsCentered = true;
+        myLocationLayer.IsMoving = true;
+
+        // Получаем текущее местоположение
+        var pos = await geo.GetUserLocationAsync();
+        if (pos.IsSuccess)
+        {
+            var tpos = HomePageHelpers.TransformLocation(pos.Data!);
+            myLocationLayer.UpdateMyLocation(tpos, true);
+
+            // Обновление направления
+            if (pos.Data!.Course != null)
+            {
+                myLocationLayer.UpdateMyDirection(pos.Data!.Course.Value, myLocationLayer.ViewingDirection, true);
+            }
+
+            // Центрирование карты на текущих координатах
+            var sc = new ScreenPosition(tpos.X, tpos.Y);
+            mapControl.Map.Navigator.CenterOn(tpos.X, tpos.Y);
+            mapControl.Map.Navigator.ZoomTo(90); // Установите желаемый масштаб
+        }
+    }
 }

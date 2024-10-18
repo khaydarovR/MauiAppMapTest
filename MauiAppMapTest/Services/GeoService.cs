@@ -11,8 +11,8 @@ public class GeoService
 	{
 		try
 		{
-			var r = new GeolocationRequest(GeolocationAccuracy.Best);
-			var location = await Geolocation.Default.GetLocationAsync(r);
+			var r = new GeolocationRequest(GeolocationAccuracy.Best, TimeSpan.FromSeconds(3));
+			var location = await Geolocation.GetLocationAsync(r);
 			if (location == null) location = await Geolocation.Default.GetLastKnownLocationAsync();
 
 			if (location != null)
