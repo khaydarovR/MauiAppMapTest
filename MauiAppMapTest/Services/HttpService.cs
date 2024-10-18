@@ -11,11 +11,20 @@ namespace MauiAppMapTest.Services
         private readonly HttpClient httpClient;
         private readonly ILogger<HttpService> logger;
 
-
+        public void SetJwt(string jwt)
+        {
+            //httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {jwt}");
+            httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", jwt);
+        }
         public HttpService(HttpClient httpClient, ILogger<HttpService> logger)
         {
             this.httpClient = httpClient;
             this.logger = logger;
+            var jwt = Preferences.Get("JWT", null);
+            if (jwt != null)
+            {
+                SetJwt(jwt);
+            }
         }
 
         public async Task<Res<TResponse>> Post<TData, TResponse>(string url, TData data)
@@ -94,7 +103,7 @@ namespace MauiAppMapTest.Services
                 var json = await httpResponseMessage.Content.ReadAsStringAsync();
                 var errTxt = $"Ошибка десериализации :\n{json}\n=>\n{typeof(TResponse).FullName}\nURL: {url}";
                 logger.LogError(errTxt);
-                return new Res<TResponse>(errorText: $"Не удалось преоброзвать полученный JSON в " + typeof(TResponse).Name + $" | URL: {url}");
+                return new Res<TResponse>(errorText: $"Не удалось преоброзвать полученный JSON \n{errTxt}");
             }
 
             return new Res<TResponse>(data: successRusult!);
@@ -110,6 +119,12 @@ namespace MauiAppMapTest.Services
 
         private Res<TResponse> HandleUnauthorized<TResponse>(string url)
         {
+            var jwt = Preferences.Get("JWT", null);
+            if (jwt != null)
+            {
+                SetJwt(jwt);
+            }
+
             var errorMsg = $"Вы не авторизованы | URL: {url}";
             logger.LogError($"{errorMsg}");
 

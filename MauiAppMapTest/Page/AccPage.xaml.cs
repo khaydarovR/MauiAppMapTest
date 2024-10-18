@@ -75,4 +75,15 @@ public partial class AccPage : ContentPage, INotifyPropertyChanged
 		Role = AuthProvider.UserToken.roles;
 		Id = AuthProvider.UserToken.id.ToString();
 	}
+
+    private void Button_Clicked(object sender, EventArgs e)
+    {
+		Preferences.Clear();
+		var w = App.Current.Windows.ToList();
+
+        foreach (var a in w)
+		{
+            App.Current.CloseWindow(a);
+        }
+    }
 }

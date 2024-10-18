@@ -24,7 +24,8 @@ namespace MauiAppMapTest.ViewModel
             this.http = http;
 
             LoginCommand = new Command(async () => await LoginBtn_Clicked());
-
+            Pwd = "qwerty";
+            Email = "courier1@c";
         }
 
         public static void CheckJWT()
@@ -86,6 +87,7 @@ namespace MauiAppMapTest.ViewModel
                 //await App.Current.MainPage.DisplayAlert("Ответ", res.Data.Jwt,"OK");
                 Preferences.Set(JwtKey, res.Data!.Jwt);
                 AuthProvider.JwtSetted.Invoke();
+                http.SetJwt(res.Data.Jwt);
 				await GoBack();
             }
             else

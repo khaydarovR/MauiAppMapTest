@@ -28,7 +28,14 @@
             </HorizontalStackLayout>
         </VerticalStackLayout>
 
+        <VerticalStackLayout Padding="10" VerticalOptions="EndAndExpand" >
 
+            <Button Text="Выйти" Clicked="Button_Clicked" x:DataType="local:AccPage" 
+BackgroundColor="#FF0000" TextColor="White" />
+
+        </VerticalStackLayout>
+        
+ 
 
     </VerticalStackLayout>
 </ContentPage>

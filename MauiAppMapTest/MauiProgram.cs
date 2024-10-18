@@ -31,10 +31,11 @@ namespace MauiAppMapTest
             builder.Services.AddTransient<LoginVM>();
             builder.Services.AddTransient<HomePage>();
             builder.Services.AddTransient<GeoService>();
+            builder.Services.AddTransient<DelivPage>();
+            builder.Services.AddTransient<OrderService>();
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://j6tjmg1q-7265.euw.devtunnels.ms/") });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri("https://gd9b3wbt-7265.euw.devtunnels.ms/") });
             builder.Services.AddSingleton<HttpService, HttpService>();
-            builder.Services.AddSingleton<GeoService, GeoService>();
 
             return builder.Build();
         }
