@@ -1,5 +1,8 @@
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using CommunityToolkit.Maui.Core.Extensions;
+using MauiAppMapTest.DTO;
 using MauiAppMapTest.Services;
 
 namespace MauiAppMapTest.Page;
@@ -9,6 +12,10 @@ public partial class AccPage : ContentPage, INotifyPropertyChanged
 	private string _email;
 	private string _role;
 	private string _id;
+
+	public ObservableCollection<CStatResponse> Stat { get; set; } = new ObservableCollection<CStatResponse>();
+
+	private readonly OrderService orderService;
 
 	public string Email
 	{
@@ -56,11 +63,12 @@ public partial class AccPage : ContentPage, INotifyPropertyChanged
 		PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public AccPage()
+	public AccPage(OrderService orderService)
 	{
 		InitializeComponent();
 		BindingContext = this;
 		AuthProvider.JwtSetted += UpdateUserData;
+		this.orderService = orderService;
 	}
 
 	protected override void OnAppearing()
@@ -74,6 +82,7 @@ public partial class AccPage : ContentPage, INotifyPropertyChanged
 		Email = AuthProvider.UserToken.email;
 		Role = AuthProvider.UserToken.roles;
 		Id = AuthProvider.UserToken.id.ToString();
+		GetStatCourier();
 	}
 
     private void Button_Clicked(object sender, EventArgs e)
@@ -86,4 +95,21 @@ public partial class AccPage : ContentPage, INotifyPropertyChanged
             App.Current.CloseWindow(a);
         }
     }
+
+
+	private async void GetStatCourier()
+	{
+		var res = await orderService.GetWorkStat();
+
+		if (res.IsSuccess == false)
+		{
+			await DisplayAlert("Ошибка", res.ErrorMsg, "OK");
+		}
+		else
+		{
+			Stat = res.Data.ToObservableCollection()!;
+			OnPropertyChanged(nameof(Stat));
+		}
+	}
+
 }

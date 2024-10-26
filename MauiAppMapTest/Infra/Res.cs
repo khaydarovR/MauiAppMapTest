@@ -1,7 +1,7 @@
 ﻿namespace MauiAppMapTest.Infra
 {
 
-    public class Res<T>
+	public class Res<T>
     {
         public bool IsSuccess { get; init; } = false;
         public T? Data { get; set; }

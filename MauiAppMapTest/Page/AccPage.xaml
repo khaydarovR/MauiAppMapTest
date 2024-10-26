@@ -4,12 +4,11 @@
              x:Class="MauiAppMapTest.Page.AccPage"
              Title="AccPage"
              xmlns:local="clr-namespace:MauiAppMapTest.Page"
-             x:DataType="local:AccPage">
+             x:DataType="local:AccPage"
+             xmlns:dto="clr-namespace:MauiAppMapTest.DTO">
     <VerticalStackLayout Padding="12">
         <HorizontalStackLayout>
-            <Image
-                Source="acc.png"
-                HeightRequest="80"/>
+            <Image Source="acc.png" HeightRequest="80"/>
             <VerticalStackLayout Padding="10,0">
                 <Label FontSize="Title" Text="{Binding Email}" />
                 <Label FontSize="Subtitle" Text="{Binding Role}" />
@@ -18,24 +17,33 @@
         </HorizontalStackLayout>
 
         <VerticalStackLayout Padding="10">
-            <HorizontalStackLayout>
-                <Label FontSize="Medium" Text="Доставлено: "></Label>
-                <Label FontSize="Medium" Text="32 заказа"></Label>
-            </HorizontalStackLayout>
-            <HorizontalStackLayout>
-                <Label FontSize="Medium" Text="На сумму: "></Label>
-                <Label FontSize="Medium" Text="5424 руб."></Label>
-            </HorizontalStackLayout>
+            <Label FontSize="Medium" Text="Статистика за последние 7 дней:" />
         </VerticalStackLayout>
 
-        <VerticalStackLayout Padding="10" VerticalOptions="EndAndExpand" >
+        <CollectionView ItemsSource="{Binding Stat}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="dto:CStatResponse">
+                    <Frame Margin="5" Padding="10" CornerRadius="5" BackgroundColor="#F0F0F0">
+                        <VerticalStackLayout>
+                            <Label Text="{Binding Date, StringFormat='{0:dd.MM.yy}'}" 
+                                   FontSize="Medium" HorizontalOptions="Center"/>
+                            <HorizontalStackLayout>
+                                <Label FontSize="Medium" Text="Доставлено заказов: " />
+                                <Label FontSize="Medium" Text="{Binding DeleveredAmount}" />
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout>
+                                <Label FontSize="Medium" Text="На сумму: " />
+                                <Label FontSize="Medium" Text="{Binding TotalPrice, StringFormat='{0:N2} руб.'}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-            <Button Text="Выйти" Clicked="Button_Clicked" x:DataType="local:AccPage" 
-BackgroundColor="#FF0000" TextColor="White" />
-
+        <VerticalStackLayout Padding="10" VerticalOptions="EndAndExpand">
+            <Button Text="Выйти" Clicked="Button_Clicked"
+                    BackgroundColor="#FF0000" TextColor="White" />
         </VerticalStackLayout>
-        
- 
-
     </VerticalStackLayout>
 </ContentPage>

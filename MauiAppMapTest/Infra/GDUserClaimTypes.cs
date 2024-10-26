@@ -32,4 +32,11 @@ namespace GD.Shared.Common
         public const string BankCard = "по карте";
         public const string Cash = "наличкой";
     }
+
+    public static class Const
+    {
+		public static string BASE_URL = "https://gd9b3wbt-7265.euw.devtunnels.ms/";
+
+	}
+
 }

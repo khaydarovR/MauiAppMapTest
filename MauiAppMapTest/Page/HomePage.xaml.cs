@@ -39,15 +39,30 @@ public partial class HomePage : ContentPage
         };
         mapControl.Map?.Layers.Add(orderLayer);
         Content = mapControl;
+
+        geo.OnPosChanged += (s) => DisplayAlert(s, "", "OK"); 
     }
 
     protected override async void OnAppearing()
     {
-        await GetLocationAndUpdateMap();
-        await SetOrderPos();
-        base.OnAppearing();
+		base.OnAppearing();
 
-    }
+		await GetLocationAndUpdateMap();
+        await SetOrderPos();
+
+		try
+		{
+			var r = await geo.StartShareMyPosWithServ();
+            if (!r.IsSuccess)
+            {
+				await DisplayAlert("Ошибка отправки геолокации", r.ErrorMsg, "OK");
+			}
+		}
+		catch (Exception e)
+		{
+			await DisplayAlert("Ошибка отправки геолокации", e.Message, "OK");
+		}
+	}
 
     private async Task SetOrderPos()
     {
@@ -68,7 +83,9 @@ public partial class HomePage : ContentPage
     }
 
     Mapsui.Layers.MyLocationLayer myLocationLayer;
-    private async Task GetLocationAndUpdateMap()
+
+
+	private async Task GetLocationAndUpdateMap()
     {
         var userLocation = await geo.GetUserLocationAsync();
         if (userLocation.IsSuccess)

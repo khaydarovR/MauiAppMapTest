@@ -46,7 +46,6 @@ public partial class DelivPage : ContentPage
         {
             await DisplayAlert("Ошибка", res.ErrorMsg, "OK");
         }
-        OnPropertyChanged(nameof(Orders));
     }
     private async void OnTakeButtonClicked(object sender, EventArgs e)
     {
@@ -133,8 +132,17 @@ public partial class DelivPage : ContentPage
 
     private async void OnLetGoButtonClicked(object sender, EventArgs e)
     {
-        await _orderService.LetGoOrderAsync(SelectedOrder.Id);
+        var res = await _orderService.LetGoOrderAsync(SelectedOrder.Id);
 
-    }
-
+        if (res.IsSuccess == false)
+        {
+			await DisplayAlert("Ошибка", res.ErrorMsg, "OK");
+		}
+        else
+        {
+			await DisplayAlert("", "Успешно", "OK");
+			LoadSelected();
+			LoadOrders();
+		}
+	}
 }

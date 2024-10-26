@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using GD.Shared.Common;
+using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -54,7 +55,7 @@ namespace MauiAppMapTest.ViewModel
         {
             // создание подключения
             hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://j6tjmg1q-7265.euw.devtunnels.ms/poshub")
+                .WithUrl(Const.BASE_URL+"poshub")
                 .Build();
 
             IsConnected = false;    // по умолчанию не подключены
@@ -78,7 +79,7 @@ namespace MauiAppMapTest.ViewModel
         // подключение к чату
         public async Task Connect()
         {
-            if (IsConnected)
+/*            if (IsConnected)
                 return;
             try
             {
@@ -90,7 +91,7 @@ namespace MauiAppMapTest.ViewModel
             catch (Exception ex)
             {
                 SendLocalMessage(string.Empty, $"Ошибка подключения: {ex.Message}");
-            }
+            }*/
         }
 
         // Отключение от чата
@@ -106,7 +107,7 @@ namespace MauiAppMapTest.ViewModel
         // Отправка сообщения
         async Task SendMessage()
         {
-            try
+/*            try
             {
                 IsBusy = true;
                 await hubConnection.InvokeAsync("Send", UserName, Message);
@@ -116,7 +117,7 @@ namespace MauiAppMapTest.ViewModel
                 SendLocalMessage(string.Empty, $"Ошибка отправки: {ex.Message}");
             }
 
-            IsBusy = false;
+            IsBusy = false;*/
         }
         // Добавление сообщения
         private void SendLocalMessage(string user, string message)

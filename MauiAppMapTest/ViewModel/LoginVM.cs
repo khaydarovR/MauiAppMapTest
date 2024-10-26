@@ -1,5 +1,4 @@
-﻿using MauiAppMapTest.Infra;
-using MauiAppMapTest.Services;
+﻿using MauiAppMapTest.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,6 +9,7 @@ using CommunityToolkit.Maui.Alerts;
 using CommunityToolkit.Maui.Core;
 using System.Threading;
 using MauiAppMapTest.Page;
+using MauiAppMapTest.Infra;
 
 
 namespace MauiAppMapTest.ViewModel

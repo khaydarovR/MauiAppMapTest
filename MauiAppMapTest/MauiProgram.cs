@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Maui;
+using GD.Shared.Common;
 using MauiAppMapTest.Page;
 using MauiAppMapTest.Services;
 using MauiAppMapTest.ViewModel;
@@ -29,15 +30,17 @@ namespace MauiAppMapTest
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddTransient<LoginPage>();
             builder.Services.AddTransient<LoginVM>();
-            builder.Services.AddTransient<HomePage>();
-            builder.Services.AddTransient<GeoService>();
+            builder.Services.AddSingleton<HomePage>();
+            builder.Services.AddSingleton<GeoService>();
             builder.Services.AddTransient<DelivPage>();
             builder.Services.AddTransient<OrderService>();
+            builder.Services.AddTransient<AccPage>();
 
-            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri("https://gd9b3wbt-7265.euw.devtunnels.ms/") });
+            builder.Services.AddSingleton(sp => new HttpClient { BaseAddress = new Uri(Const.BASE_URL) });
             builder.Services.AddSingleton<HttpService, HttpService>();
 
             return builder.Build();
         }
     }
 }
+

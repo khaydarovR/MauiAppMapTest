@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MauiAppMapTest.Infra
 {
-    public class SignInResponse
+	public class SignInResponse
     {
         public string Jwt { get; set; }
     }
+
 }
